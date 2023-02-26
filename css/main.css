@@ -18,6 +18,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100%;
 }
 
 .element-full-height {
@@ -26,14 +27,6 @@ body {
 
 .hidden {
     display: none;
-}
-
-.inline-container {
-    display: inline-flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: flex-start;
-    flex-wrap: wrap;
 }
 
 textarea {

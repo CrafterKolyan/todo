@@ -6,7 +6,8 @@ Website: [https://crafterkolyan.github.io/todo-list](https://crafterkolyan.githu
 
 ## Features
 - Your ToDo List is saved purely on your computer via cookies
-- ToDo List is saved between reloads
+- ToDo List is saved on any change
+- ToDo List is saved between reloads of webpage
 
 ## Tested in browsers
 - Chrome

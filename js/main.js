@@ -3,18 +3,13 @@ function saveToDo() {
     status.innerText = "Saving..."
     let todo = document.getElementById("todo")
     let value = encodeURIComponent(todo.value)
-    document.cookie = "todo=" + value + "; expires=Fri, 31 Dec 9999 23:59:59 GMT"
+    localStorage.setItem("todo", value)
     status.innerText = "Saved!"
 }
 
 function initialize() {
     let todo = document.getElementById("todo")
-    let cookie = document.cookie.split(";")
-    for (let i = 0; i < cookie.length; ++i) {
-        if (cookie[i].split("=")[0] === "todo") {
-            todo.value = decodeURIComponent(cookie[i].split("=")[1])
-        }
-    }
+    todo.value = decodeURIComponent(localStorage.getItem("todo", value))
 }
 
 window.onload = initialize

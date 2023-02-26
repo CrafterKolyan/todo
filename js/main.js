@@ -9,7 +9,7 @@ function saveToDo() {
 
 function initialize() {
     let todo = document.getElementById("todo")
-    todo.value = decodeURIComponent(localStorage.getItem("todo", value))
+    todo.value = decodeURIComponent(localStorage.getItem("todo"))
 }
 
 window.onload = initialize

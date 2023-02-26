@@ -15,7 +15,6 @@ function initialize() {
             todo.value = decodeURIComponent(cookie[i].split("=")[1])
         }
     }
-    window.initializeInterval = window.setInterval(initialize, 10)
 }
 
 window.onload = initialize

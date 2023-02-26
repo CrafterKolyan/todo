@@ -25,6 +25,10 @@ body {
     height: 100%;
 }
 
+.hidden {
+    display: none;
+}
+
 .inline-container {
     display: inline-flex;
     flex-direction: row;

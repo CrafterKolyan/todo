@@ -1,8 +1,8 @@
-# [ToDo](https://crafterkolyan.github.io/todo)
+# [ToDo](https://crafterkolyan.github.io/todo/)
 
 Static web application for ToDo
 
-Website: [https://crafterkolyan.github.io/todo](https://crafterkolyan.github.io/todo)
+Website: [https://crafterkolyan.github.io/todo/](https://crafterkolyan.github.io/todo/)
 
 ## Features
 - Your ToDo is saved purely on your computer via localStorage

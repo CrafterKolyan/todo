@@ -1,4 +1,4 @@
-function saveList() {
+function saveToDo() {
     let todo = document.getElementById("todo")
     document.cookie = "todo=" + todo.value
 }

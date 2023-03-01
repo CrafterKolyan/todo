@@ -8,6 +8,13 @@ function saveToDo() {
 }
 
 function initialize() {
+    document.addEventListener("keydown", (e) => {
+        if (e.ctrlKey && e.key === "s") {
+            e.preventDefault()
+            saveToDo()
+        }
+    })
+
     let todo = document.getElementById("todo")
     let value = localStorage.getItem("todo")
     if (value !== null) {

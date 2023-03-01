@@ -5,10 +5,10 @@ Static web application for ToDo
 Website: [https://crafterkolyan.github.io/todo/](https://crafterkolyan.github.io/todo/)
 
 ## Features
-- Your ToDo is saved purely on your computer via localStorage
-- ToDo is saved on any change
-- ToDo is saved between reloads of webpage
-- ToDo is saved between browser sessions
+- Save (Autosave/Ctrl + S)
+    - Your ToDo is saved purely on your computer via [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) (preserved between browser sessions)
+    - ToDo is saved on any change
+    - `Ctrl + S` saves content (This feature is needed purely to keep users sane)
 
 ## Tested in browsers
 - Chrome

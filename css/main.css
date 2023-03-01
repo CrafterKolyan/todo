@@ -1,7 +1,12 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
 html,
 body {
     height: 100%;
-    margin: 0px;
 }
 
 body {
@@ -37,6 +42,20 @@ body {
 
 .hidden {
     display: none;
+}
+
+.right {
+    margin-left: auto;
+}
+
+.status {
+    font-size: 1.3em;
+    border: 1px solid #d4edda;
+    border-radius: 0.25em;
+    background-color: #c3e6cb;
+    padding: 0.25em 0.5em;
+    margin-bottom: 0.5rem;
+    color: #155724;
 }
 
 textarea {

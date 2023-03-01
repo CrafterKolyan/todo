@@ -13,6 +13,8 @@ function initialize() {
     if (value !== null) {
         todo.value = decodeURIComponent(value)
     }
+    let status = document.getElementById("status")
+    status.innerText = "Loaded!"
 }
 
 window.onload = initialize

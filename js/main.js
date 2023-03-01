@@ -8,9 +8,9 @@ function saveToDo() {
 }
 
 function initialize() {
-    document.addEventListener("keydown", (e) => {
-        if (e.ctrlKey && e.key === "s") {
-            e.preventDefault()
+    document.addEventListener("keydown", (event) => {
+        if (event.ctrlKey && event.key === "s") {
+            event.preventDefault()
             saveToDo()
         }
     })

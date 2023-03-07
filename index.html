@@ -1,13 +1,13 @@
 ---
 layout: default
 
-title: To Do
+title: ToDo
 css: css/main.css
 javascript: js/main.js
 ---
 
 <div class="container full-height">
-    <h1>To Do</h1>
-    <div id="status" class="status right"></div>
+    <h1>{{ site.title }}</h1>
+    <div id="status" class="status right green"></div>
     <textarea id="todo" oninput="saveToDo()" class="content full-width" autocomplete="off"></textarea>
 </div>

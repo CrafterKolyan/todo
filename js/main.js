@@ -14,7 +14,7 @@ function checkSingleInstance() {
         todo.disabled = true
 
         let status = document.getElementById("status")
-        status.innerText = "Another instance of this app is running"
+        status.innerText = "Another instance of this app is running. Reload the page if you want to continue editing"
         status.className = "status right red"
     }
 }

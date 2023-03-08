@@ -2,7 +2,7 @@ const cacheName = "todo"; // Whatever name
 // Pass all assets here
 // This example use a folder named «/core» in the root folder
 // It is mandatory to add an icon (Important for mobile users)
-const filesToCache = ["/", "/index.html", "/css/main.css", "/js/main.js"];
+const filesToCache = ["/todo/", "/todo/index.html", "/todo/css/main.css", "/todo/js/main.js"];
 
 self.addEventListener("install", function (event) {
     console.log(event);

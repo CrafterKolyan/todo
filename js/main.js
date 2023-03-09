@@ -46,7 +46,7 @@ function initialize() {
     window.checkSingleInstanceInterval = setInterval(checkSingleInstance, 1000)
 
     if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("../service_worker.js", { scope: "./" }).then((registration) => {
+        navigator.serviceWorker.register("/todo/service_worker.js").then((registration) => {
             registration.update()
         })
     }

@@ -5,6 +5,8 @@ Static web application for ToDo
 Website: [https://crafterkolyan.github.io/todo/](https://crafterkolyan.github.io/todo/)
 
 ## Features
+- Offline support
+    - After first load you can always get to the application even without access to the internet. It will be cached in your browser.
 - Save (Autosave/Ctrl + S)
     - Your ToDo is saved purely on your computer via [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) (preserved between browser sessions)
     - ToDo is saved on any change

@@ -44,6 +44,12 @@ function initialize() {
     status.innerText = "Loaded!"
 
     window.checkSingleInstanceInterval = setInterval(checkSingleInstance, 1000)
+
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/service_worker.js", { scope: "/" }).then((registration) => {
+            registration.update()
+        })
+    }
 }
 
 window.onload = initialize

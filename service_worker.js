@@ -1,5 +1,5 @@
 const CACHE_NAME = "todo"
-const FILES_TO_CACHE = ["/", "/index.html", "/js/main.js", "/css/main.css"]
+const FILES_TO_CACHE = ["./", "./index.html", "./js/main.js", "./css/main.css"]
 
 self.addEventListener("install", (e) => {
     self.skipWaiting()

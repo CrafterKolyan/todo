@@ -21,9 +21,20 @@ body {
     text-align: center;
 }
 
-.container {
+.vcontainer {
     display: flex;
     flex-flow: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.fill-from-start {
+    justify-content: flex-start;
+}
+
+.hcontainer {
+    display: flex;
+    flex-flow: row;
     justify-content: center;
     align-items: center;
 }
@@ -48,11 +59,12 @@ body {
     margin-left: auto;
 }
 
-.status {
+.header-block {
     font-size: 1.3em;
     border-radius: 0.25em;
     padding: 0.25em 0.5em;
     margin-bottom: 0.5rem;
+    border: 1px solid black;
 }
 
 .green {
@@ -67,6 +79,33 @@ body {
     color: #721c24;
 }
 
+.section {
+    padding: 0.5rem;
+    margin: 0.2rem;
+    background-color: #f1f3f4;
+    border-radius: 0.25em;
+}
+
+.section-text {
+    font-size: 1.5em;
+    background-color: #f1f3f4;
+    border: 0px;
+    margin: 1px;
+}
+
+.section-text:focus {
+    background-color: #e4e4e4;
+    outline: 1px solid black;
+    border-radius: 0.1em;
+}
+
+.section-delete {
+    background-color: #f1f3f4;
+    border: 0px;
+    margin: 0em 1em;
+}
+
 textarea {
     display: block;
+    resize: none;
 }

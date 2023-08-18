@@ -6,8 +6,12 @@ css: css/main.css
 javascript: js/main.js
 ---
 
-<div class="container full-height">
+<div class="vcontainer full-height fill-from-start">
     <h1>{{ site.title }}</h1>
-    <div id="status" class="status right green"></div>
-    <textarea id="todo" oninput="saveToDo()" class="content full-width" autocomplete="off"></textarea>
+    <div id="header" class="hcontainer full-width">
+        <button id="add-section" class="header-block" onclick="addSection(); saveToDo()">Add Section</button>
+        <span id="status" class="header-block right green"></span>
+    </div>
+    <div id="sections" class="vcontainer full-width">
+    </div>
 </div>

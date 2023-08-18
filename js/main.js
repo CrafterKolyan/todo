@@ -146,6 +146,12 @@ function initialize() {
     status.innerText = "Loaded!"
 
     window.checkSingleInstanceInterval = setInterval(checkSingleInstance, 1000)
+    window.addEventListener("resize", () => {
+        let sections = document.getElementById("sections")
+        Array.from(sections.getElementsByClassName("section-text")).forEach((sectionText) => {
+            autoAdjustTextareaHeight(sectionText)
+        })
+    })
 
     if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("/todo/service_worker.js").then((registration) => {

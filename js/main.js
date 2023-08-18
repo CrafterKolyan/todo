@@ -1,28 +1,74 @@
-function saveToDo() {
-    let status = document.getElementById("status")
-    status.innerText = "Saving..."
+function getState() {
     let sections = document.getElementById("sections")
     let sectionTexts = sections.getElementsByClassName("section-text")
     let todoList = []
     for (let i = 0; i < sectionTexts.length; i++) {
         let sectionText = sectionTexts[i]
-        let value = encodeURIComponent(sectionText.value)
+        let value = sectionText.value
         todoList.push(value)
     }
-    let value = encodeURIComponent(todoList.join("\n\n"))
-    localStorage.setItem("todo", value)
+    return {
+        version: "1",
+        todo: todoList
+    }
+}
+
+function saveState() {
+    let status = document.getElementById("status")
+    status.innerText = "Saving..."
+    let state = getState()
+    localStorage.setItem("state", JSON.stringify(state))
     status.innerText = "Saved!"
 }
 
-function loadToDo() {
-    let value = localStorage.getItem("todo")
-    if (value !== null) {
-        value = decodeURIComponent(value)
-        let todoList = value.split("\n\n")
+function tryLoadUnversionedState() {
+    let state = localStorage.getItem("todo")
+    if (state !== null) {
+        state = decodeURIComponent(state)
+        let todoList = state.split("\n\n").map((item) => decodeURIComponent(item))
+        state = {
+            version: "0",
+            todo: todoList
+        }
+    }
+    return state
+}
+
+function tryLoadStateV1() {
+    let state = localStorage.getItem("state")
+    if (state !== null) {
+        state = JSON.parse(state)
+        if (state.version === "1") {
+            return state
+        }
+    }
+    return null
+}
+
+function tryLoadState() {
+    let state = tryLoadStateV1()
+    if (state !== null) {
+        return state
+    }
+    state = tryLoadUnversionedState()
+    if (state !== null) {
+        state = {
+            version: "1",
+            todo: state.todo
+        }
+        return state
+    }
+    return null
+}
+
+function loadState() {
+    let state = tryLoadState()
+    if (state !== null) {
+        let todoList = state.todo
         for (let i = 0; i < todoList.length; i++) {
             let section = addSection()
             let sectionText = section.getElementsByClassName("section-text")[0]
-            sectionText.value = decodeURIComponent(todoList[i])
+            sectionText.value = todoList[i]
             autoAdjustTextareaHeight(sectionText)
         }
     } else {
@@ -55,7 +101,7 @@ function addSection() {
     textarea.rows = "1"
     textarea.oninput = function () {
         autoAdjustTextareaHeight(textarea)
-        saveToDo()
+        saveState()
     }
 
     let deleteButton = document.createElement("button")
@@ -64,7 +110,7 @@ function addSection() {
     deleteButton.onclick = function () {
         let sections = document.getElementById("sections")
         sections.removeChild(section)
-        saveToDo()
+        saveState()
     }
     deleteButton.tabIndex = "-1"
 
@@ -83,11 +129,11 @@ function initialize() {
     document.addEventListener("keydown", (event) => {
         if (event.ctrlKey && event.key === "s") {
             event.preventDefault()
-            saveToDo()
+            saveState()
         }
     })
 
-    loadToDo()
+    loadState()
     let currentInstanceId = localStorage.getItem("currentInstanceId")
     if (currentInstanceId === null) {
         currentInstanceId = 0

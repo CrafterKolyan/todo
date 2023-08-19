@@ -105,6 +105,19 @@ body {
     margin: 0em 1em;
 }
 
+.vertical-line {
+    height: 100%;
+    margin-right: 0.5em;
+}
+
+.vertical-line-focused {
+    outline: 1px solid #7ae793;
+}
+
+.vertical-line-selected {
+    outline: 1px solid #e5e77a;
+}
+
 textarea {
     display: block;
     resize: none;

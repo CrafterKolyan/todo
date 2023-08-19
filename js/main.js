@@ -84,17 +84,23 @@ function autoAdjustTextareaHeight(textarea) {
 function checkSingleInstance() {
     let currentInstanceId = parseInt(localStorage.getItem("currentInstanceId"))
     if (currentInstanceId !== window.currentInstanceId) {
-        let todo = document.getElementById("todo")
-        todo.disabled = true
+        Array.from(document.getElementsByTagName("textarea")).forEach((textarea) => {
+            textarea.disabled = true
+        })
+        Array.from(document.getElementsByTagName("button")).forEach((button) => {
+            button.disabled = true
+        })
 
         let status = document.getElementById("status")
         status.innerText = "Another instance of this app is running. Reload the page if you want to continue editing"
-        status.className = "status right red"
+        status.className = "header-block right red"
     }
 }
 
 function addSection() {
-    // Create <textarea id="section-text" class="full-width section-text" autocomplete="off" rows="1"></textarea>
+    let verticalLine = document.createElement("div")
+    verticalLine.className = "vertical-line"
+
     let textarea = document.createElement("textarea")
     textarea.className = "full-width section-text"
     textarea.autocomplete = "off"
@@ -103,6 +109,12 @@ function addSection() {
         autoAdjustTextareaHeight(textarea)
         saveState()
     }
+    textarea.addEventListener("focus", () => {
+        verticalLine.className = "vertical-line vertical-line-focused"
+    })
+    textarea.addEventListener("blur", () => {
+        verticalLine.className = "vertical-line"
+    })
 
     let deleteButton = document.createElement("button")
     deleteButton.className = "section-delete"
@@ -116,6 +128,7 @@ function addSection() {
 
     let section = document.createElement("div")
     section.className = "hcontainer full-width section"
+    section.appendChild(verticalLine)
     section.appendChild(textarea)
     section.appendChild(deleteButton)
 

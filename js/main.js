@@ -144,20 +144,30 @@ function addSection() {
         }
     })
 
+    let editDiv = document.createElement("div")
+    editDiv.className = "hcontainer stretch full-width section-edit"
+    editDiv.appendChild(verticalLine)
+    editDiv.appendChild(textarea)
+
     let deleteButton = document.createElement("button")
     deleteButton.className = "section-delete"
     deleteButton.innerText = "X"
-    deleteButton.onclick = function () {
-        let sections = document.getElementById("sections")
-        sections.removeChild(section)
-        saveState()
+    deleteButton.onclick = function (event) {
+        event.preventDefault()
+        event.stopPropagation()
+        if (deleteButton.classList.contains("section-delete-clicked")) {
+            let sections = document.getElementById("sections")
+            sections.removeChild(section)
+            saveState()
+        } else {
+            deleteButton.className = "section-delete section-delete-clicked"
+        }
     }
     deleteButton.tabIndex = "-1"
 
     let section = document.createElement("div")
     section.className = "hcontainer full-width section"
-    section.appendChild(verticalLine)
-    section.appendChild(textarea)
+    section.appendChild(editDiv)
     section.appendChild(deleteButton)
 
     let sections = document.getElementById("sections")
@@ -180,6 +190,11 @@ function initialize() {
             }
             currentlySelectedVerticalLine = null
         }
+    })
+    document.addEventListener("click", (event) => {
+        Array.from(document.getElementsByClassName("section-delete-clicked")).forEach((section) => {
+            section.className = "section-delete"
+        })
     })
 
     loadState()

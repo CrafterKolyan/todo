@@ -1,70 +1,82 @@
-currentlySelectedVerticalLine = null
+class State {
+    static #instance = null
 
-function getState() {
-    let sections = document.getElementById("sections")
-    let sectionTexts = sections.getElementsByClassName("section-text")
-    let todoList = []
-    for (let i = 0; i < sectionTexts.length; i++) {
-        let sectionText = sectionTexts[i]
-        let value = sectionText.value
-        todoList.push(value)
+    static getInstance() {
+        if (State.#instance === null) {
+            State.#instance = State.#fromLocalStorage()
+        }
+        return State.#instance
     }
-    return {
-        version: "1",
-        todo: todoList
+
+    static #tryLoadUnversionedState() {
+        let state = localStorage.getItem("todo")
+        if (state !== null) {
+            state = decodeURIComponent(state)
+            let todoList = state.split("\n\n").map((item) => decodeURIComponent(item))
+            state = {
+                version: "0",
+                todo: todoList
+            }
+        }
+        return state
+    }
+
+    static #tryLoadVersionedState() {
+        let state = localStorage.getItem("state")
+        if (state !== null) {
+            state = JSON.parse(state)
+            return state
+        }
+        return null
+    }
+
+    static #fromLocalStorage() {
+        let state = State.#tryLoadVersionedState()
+        if (state !== null) {
+            return state
+        }
+        state = State.#tryLoadUnversionedState()
+        if (state !== null) {
+            state = {
+                version: "1",
+                todo: state.todo
+            }
+            return state
+        }
+        return null
+    }
+
+    static update() {
+        let state = State.getInstance()
+        let sections = document.getElementById("sections")
+        let sectionTexts = sections.getElementsByClassName("section-text")
+        let todoList = []
+        for (let i = 0; i < sectionTexts.length; i++) {
+            let sectionText = sectionTexts[i]
+            let value = sectionText.value
+            todoList.push(value)
+        }
+        state.todo = todoList
+        State._instance = state
+        State.toLocalStorage()
+    }
+
+    static toLocalStorage() {
+        localStorage.setItem("state", JSON.stringify(this.getInstance()))
     }
 }
+
+currentlySelectedVerticalLine = null
 
 function saveState() {
     let status = document.getElementById("status")
     status.innerText = "Saving..."
-    let state = getState()
-    localStorage.setItem("state", JSON.stringify(state))
+    State.update()
     status.innerText = "Saved!"
 }
 
-function tryLoadUnversionedState() {
-    let state = localStorage.getItem("todo")
-    if (state !== null) {
-        state = decodeURIComponent(state)
-        let todoList = state.split("\n\n").map((item) => decodeURIComponent(item))
-        state = {
-            version: "0",
-            todo: todoList
-        }
-    }
-    return state
-}
-
-function tryLoadStateV1() {
-    let state = localStorage.getItem("state")
-    if (state !== null) {
-        state = JSON.parse(state)
-        if (state.version === "1") {
-            return state
-        }
-    }
-    return null
-}
-
-function tryLoadState() {
-    let state = tryLoadStateV1()
-    if (state !== null) {
-        return state
-    }
-    state = tryLoadUnversionedState()
-    if (state !== null) {
-        state = {
-            version: "1",
-            todo: state.todo
-        }
-        return state
-    }
-    return null
-}
-
 function loadState() {
-    let state = tryLoadState()
+    let state = State.getInstance()
     if (state !== null) {
         let todoList = state.todo
         for (let i = 0; i < todoList.length; i++) {

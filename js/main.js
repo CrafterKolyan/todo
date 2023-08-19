@@ -1,3 +1,5 @@
+currentlySelectedVerticalLine = null
+
 function getState() {
     let sections = document.getElementById("sections")
     let sectionTexts = sections.getElementsByClassName("section-text")
@@ -110,10 +112,23 @@ function addSection() {
         saveState()
     }
     textarea.addEventListener("focus", () => {
-        verticalLine.className = "vertical-line vertical-line-focused"
+        if (currentlySelectedVerticalLine !== null) {
+            currentlySelectedVerticalLine.className = "vertical-line"
+        }
+        currentlySelectedVerticalLine = verticalLine
+        currentlySelectedVerticalLine.className = "vertical-line vertical-line-focused"
     })
     textarea.addEventListener("blur", () => {
         verticalLine.className = "vertical-line"
+        currentlySelectedVerticalLine = null
+    })
+    textarea.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            event.preventDefault()
+            textarea.blur()
+            verticalLine.className = "vertical-line vertical-line-selected"
+            currentlySelectedVerticalLine = verticalLine
+        }
     })
 
     let deleteButton = document.createElement("button")

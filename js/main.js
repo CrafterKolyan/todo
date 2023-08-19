@@ -125,6 +125,7 @@ function addSection() {
     textarea.addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
             event.preventDefault()
+            event.stopPropagation()
             textarea.blur()
             verticalLine.className = "vertical-line vertical-line-selected"
             currentlySelectedVerticalLine = verticalLine
@@ -157,7 +158,15 @@ function initialize() {
     document.addEventListener("keydown", (event) => {
         if (event.ctrlKey && event.key === "s") {
             event.preventDefault()
+            event.stopPropagation()
             saveState()
+        } else if (event.key === "Escape") {
+            event.preventDefault()
+            event.stopPropagation()
+            if (currentlySelectedVerticalLine !== null) {
+                currentlySelectedVerticalLine.className = "vertical-line"
+            }
+            currentlySelectedVerticalLine = null
         }
     })
 

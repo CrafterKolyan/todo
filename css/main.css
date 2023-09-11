@@ -28,15 +28,15 @@ body {
     align-items: center;
 }
 
-.fill-from-start {
-    justify-content: flex-start;
-}
-
 .hcontainer {
     display: flex;
     flex-flow: row;
     justify-content: center;
     align-items: center;
+}
+
+.fill-from-start {
+    justify-content: flex-start;
 }
 
 .stretch {

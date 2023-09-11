@@ -63,6 +63,14 @@ body {
     margin-left: auto;
 }
 
+.header {
+    position: sticky;
+    top: 0em;
+    padding-top: 0.25em;
+    background-color: #ffffff;
+    border-radius: 0.25em;
+}
+
 .header-block {
     font-size: 1.3em;
     border-radius: 0.25em;

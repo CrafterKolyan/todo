@@ -166,7 +166,7 @@ function addSection() {
     deleteButton.tabIndex = "-1"
 
     let section = document.createElement("div")
-    section.className = "hcontainer full-width section"
+    section.className = "hcontainer stretch full-width section"
     section.appendChild(editDiv)
     section.appendChild(deleteButton)
 

@@ -191,11 +191,24 @@ function initialize() {
             currentlySelectedVerticalLine = null
         }
     })
-    document.addEventListener("click", (event) => {
+    document.addEventListener("click", () => {
         Array.from(document.getElementsByClassName("section-delete-clicked")).forEach((section) => {
             section.className = "section-delete"
         })
     })
+
+    const header = document.getElementById("header")
+    const intersectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.intersectionRatio < 1) {
+                header.className = "hcontainer full-width header header-sticky"
+            } else {
+                header.className = "hcontainer full-width header"
+            }
+        }
+        )
+    }, { threshold: [1] })
+    intersectionObserver.observe(header)
 
     loadState()
     let currentInstanceId = localStorage.getItem("currentInstanceId")

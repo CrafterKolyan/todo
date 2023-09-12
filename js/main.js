@@ -197,18 +197,19 @@ function initialize() {
         })
     })
 
+    const preHeader = document.getElementById("pre-header")
     const header = document.getElementById("header")
     const intersectionObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-            if (entry.intersectionRatio < 1) {
-                header.className = "hcontainer full-width header header-sticky"
-            } else {
+            if (entry.isIntersecting) {
                 header.className = "hcontainer full-width header"
+            } else {
+                header.className = "hcontainer full-width header header-sticky"
             }
         }
         )
     }, { threshold: [1] })
-    intersectionObserver.observe(header)
+    intersectionObserver.observe(preHeader)
 
     loadState()
     let currentInstanceId = localStorage.getItem("currentInstanceId")

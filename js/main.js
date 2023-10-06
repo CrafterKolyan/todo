@@ -43,7 +43,10 @@ class State {
             }
             return state
         }
-        return null
+        return {
+            version: "1",
+            todo: [""]
+        }
     }
 
     static update() {
@@ -82,7 +85,6 @@ function loadState() {
             const sectionText = section.getElementsByClassName("section-text")[0]
             const dragGrid = section.getElementsByClassName("drag-grid")[0]
             sectionText.value = todoList[i]
-            console.log(dragGrid)
             autoAdjustTextareaHeight(sectionText, dragGrid)
         }
     } else {

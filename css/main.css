@@ -138,6 +138,7 @@ body {
     border-radius: 50%;
     height: 0.25em;
     width: 0.25em;
+    transform: translateZ(0);
 }
 
 .drag-grid {

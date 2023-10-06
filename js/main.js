@@ -158,6 +158,9 @@ const BaseElements = {
     },
     textarea: function () {
         return BaseElements.element("textarea", ...arguments)
+    },
+    button: function () {
+        return BaseElements.element("button", ...arguments)
     }
 }
 
@@ -197,39 +200,41 @@ const Elements = {
         editDiv.appendChild(dragGrid)
         editDiv.appendChild(sectionText)
         return editDiv
+    },
+    deleteButton: function () {
+        const deleteButton = BaseElements.button("section-delete")
+        deleteButton.innerText = "X"
+        deleteButton.tabIndex = "-1"
+        return deleteButton
+    },
+    section: function () {
+        const section = BaseElements.div("hcontainer stretch full-width section")
+        const editDiv = Elements.editDiv()
+        const deleteButton = Elements.deleteButton()
+        deleteButton.onclick = function (event) {
+            event.preventDefault()
+            event.stopPropagation()
+            if (deleteButton.classList.contains("section-delete-clicked")) {
+                const sections = document.getElementById("sections")
+                sections.removeChild(section)
+                saveState()
+            } else {
+                Array.from(document.getElementsByClassName("section-delete-clicked")).forEach((section) => {
+                    section.className = "section-delete"
+                })
+                deleteButton.className = "section-delete section-delete-clicked"
+            }
+        }
+        section.appendChild(editDiv)
+        section.appendChild(deleteButton)
+        return section
     }
 }
 
 function addSection() {
-    const editDiv = Elements.editDiv()
-
-    let deleteButton = document.createElement("button")
-    deleteButton.className = "section-delete"
-    deleteButton.innerText = "X"
-    deleteButton.onclick = function (event) {
-        event.preventDefault()
-        event.stopPropagation()
-        if (deleteButton.classList.contains("section-delete-clicked")) {
-            let sections = document.getElementById("sections")
-            sections.removeChild(section)
-            saveState()
-        } else {
-            Array.from(document.getElementsByClassName("section-delete-clicked")).forEach((section) => {
-                section.className = "section-delete"
-            })
-            deleteButton.className = "section-delete section-delete-clicked"
-        }
-    }
-    deleteButton.tabIndex = "-1"
-
-    let section = document.createElement("div")
-    section.className = "hcontainer stretch full-width section"
-    section.appendChild(editDiv)
-    section.appendChild(deleteButton)
-
+    const section = Elements.section()
     let sections = document.getElementById("sections")
     sections.appendChild(section)
-
     return section
 }
 
@@ -249,16 +254,18 @@ function initialize() {
 
     const preHeader = document.getElementById("pre-header")
     const header = document.getElementById("header")
-    const intersectionObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-                header.className = "hcontainer full-width header"
-            } else {
-                header.className = "hcontainer full-width header header-sticky"
-            }
-        }
-        )
-    }, { threshold: [1] })
+    const intersectionObserver = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    header.className = "hcontainer full-width header"
+                } else {
+                    header.className = "hcontainer full-width header header-sticky"
+                }
+            })
+        },
+        { threshold: [1] }
+    )
     intersectionObserver.observe(preHeader)
 
     loadState()

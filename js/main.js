@@ -66,8 +66,6 @@ class State {
     }
 }
 
-currentlySelectedVerticalLine = null
-
 function saveState() {
     let status = document.getElementById("status")
     status.innerText = "Saving..."
@@ -81,18 +79,15 @@ function loadState() {
         let todoList = state.todo
         for (let i = 0; i < todoList.length; i++) {
             let section = addSection()
-            let sectionText = section.getElementsByClassName("section-text")[0]
+            const sectionText = section.getElementsByClassName("section-text")[0]
+            const dragGrid = section.getElementsByClassName("drag-grid")[0]
             sectionText.value = todoList[i]
-            autoAdjustTextareaHeight(sectionText)
+            console.log(dragGrid)
+            autoAdjustTextareaHeight(sectionText, dragGrid)
         }
     } else {
         addSection()
     }
-}
-
-function autoAdjustTextareaHeight(textarea) {
-    textarea.style.height = "0px"
-    textarea.style.height = textarea.scrollHeight + "px"
 }
 
 function checkSingleInstance() {
@@ -111,43 +106,102 @@ function checkSingleInstance() {
     }
 }
 
-function addSection() {
-    let verticalLine = document.createElement("div")
-    verticalLine.className = "vertical-line"
-
-    let textarea = document.createElement("textarea")
-    textarea.className = "full-width section-text"
-    textarea.autocomplete = "off"
-    textarea.rows = "1"
-    textarea.oninput = function () {
-        autoAdjustTextareaHeight(textarea)
-        saveState()
+function updateDragGrid(dragGrid, rows) {
+    const trs = Array.from(dragGrid.getElementsByTagName("tr"))
+    if (trs.length > rows) {
+        trs.slice(rows).forEach((tr) => {
+            dragGrid.removeChild(tr)
+        })
+    } else {
+        const columns = 2
+        for (let i = 0; i < rows - trs.length; ++i) {
+            const tr = BaseElements.tr()
+            for (let j = 0; j < columns; ++j) {
+                const td = BaseElements.td()
+                td.appendChild(Elements.dragDot())
+                tr.appendChild(td)
+            }
+            dragGrid.appendChild(tr)
+        }
     }
-    textarea.addEventListener("focus", () => {
-        if (currentlySelectedVerticalLine !== null) {
-            currentlySelectedVerticalLine.className = "vertical-line"
-        }
-        currentlySelectedVerticalLine = verticalLine
-        currentlySelectedVerticalLine.className = "vertical-line vertical-line-focused"
-    })
-    textarea.addEventListener("blur", () => {
-        verticalLine.className = "vertical-line"
-        currentlySelectedVerticalLine = null
-    })
-    textarea.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-            event.preventDefault()
-            event.stopPropagation()
-            textarea.blur()
-            verticalLine.className = "vertical-line vertical-line-selected"
-            currentlySelectedVerticalLine = verticalLine
-        }
-    })
+    return dragGrid
+}
 
-    let editDiv = document.createElement("div")
-    editDiv.className = "hcontainer stretch full-width section-edit"
-    editDiv.appendChild(verticalLine)
-    editDiv.appendChild(textarea)
+function autoAdjustTextareaHeight(textarea, dragGrid) {
+    textarea.style.height = "0px"
+    const height = textarea.scrollHeight
+    textarea.style.height = height + "px"
+    const rows = Math.round(height / 23)
+    const dragGridRows = 3 * rows
+    updateDragGrid(dragGrid, dragGridRows)
+}
+
+const BaseElements = {
+    element: function (tagName, className) {
+        const element = document.createElement(tagName)
+        if (arguments.length > 1) {
+            element.className = className
+        }
+        return element
+    },
+    div: function () {
+        return BaseElements.element("div", ...arguments)
+    },
+    table: function () {
+        return BaseElements.element("table", ...arguments)
+    },
+    tr: function () {
+        return BaseElements.element("tr", ...arguments)
+    },
+    td: function () {
+        return BaseElements.element("td", ...arguments)
+    },
+    textarea: function () {
+        return BaseElements.element("textarea", ...arguments)
+    }
+}
+
+const Elements = {
+    dragDot: function () {
+        return BaseElements.div("drag-dot")
+    },
+    dragGrid: function () {
+        const rows = 3
+        const columns = 2
+        const table = BaseElements.table("drag-grid")
+        for (let i = 0; i < rows; ++i) {
+            const tr = BaseElements.tr()
+            for (let j = 0; j < columns; ++j) {
+                const td = BaseElements.td()
+                td.appendChild(Elements.dragDot())
+                tr.appendChild(td)
+            }
+            table.appendChild(tr)
+        }
+        return table
+    },
+    sectionText: function () {
+        const textarea = BaseElements.textarea("full-width section-text")
+        textarea.autocomplete = "off"
+        textarea.rows = "1"
+        return textarea
+    },
+    editDiv: function () {
+        const editDiv = BaseElements.div("hcontainer stretch full-width section-edit")
+        const dragGrid = Elements.dragGrid()
+        const sectionText = Elements.sectionText()
+        sectionText.oninput = function () {
+            autoAdjustTextareaHeight(sectionText, dragGrid)
+            saveState()
+        }
+        editDiv.appendChild(dragGrid)
+        editDiv.appendChild(sectionText)
+        return editDiv
+    }
+}
+
+function addSection() {
+    const editDiv = Elements.editDiv()
 
     let deleteButton = document.createElement("button")
     deleteButton.className = "section-delete"
@@ -160,6 +214,9 @@ function addSection() {
             sections.removeChild(section)
             saveState()
         } else {
+            Array.from(document.getElementsByClassName("section-delete-clicked")).forEach((section) => {
+                section.className = "section-delete"
+            })
             deleteButton.className = "section-delete section-delete-clicked"
         }
     }
@@ -182,13 +239,6 @@ function initialize() {
             event.preventDefault()
             event.stopPropagation()
             saveState()
-        } else if (event.key === "Escape") {
-            event.preventDefault()
-            event.stopPropagation()
-            if (currentlySelectedVerticalLine !== null) {
-                currentlySelectedVerticalLine.className = "vertical-line"
-            }
-            currentlySelectedVerticalLine = null
         }
     })
     document.addEventListener("click", () => {
@@ -226,8 +276,10 @@ function initialize() {
     window.checkSingleInstanceInterval = setInterval(checkSingleInstance, 1000)
     window.addEventListener("resize", () => {
         let sections = document.getElementById("sections")
-        Array.from(sections.getElementsByClassName("section-text")).forEach((sectionText) => {
-            autoAdjustTextareaHeight(sectionText)
+        Array.from(sections.getElementsByClassName("section")).forEach((section) => {
+            const sectionText = section.getElementsByClassName("section-text")[0]
+            const dragGrid = section.getElementsByClassName("drag-grid")[0]
+            autoAdjustTextareaHeight(sectionText, dragGrid)
         })
     })
 

@@ -106,7 +106,7 @@ body {
 .section-edit {
     padding-top: 0.2em;
     padding-bottom: 0.2em;
-    padding-left: 0.5em;
+    padding-left: 0.1em;
     padding-right: 1px;
 }
 
@@ -134,16 +134,19 @@ body {
     color: #721c24;
 }
 
-.vertical-line {
+.drag-dot {
+    border-radius: 50%;
+    height: 0.25em;
+    width: 0.25em;
+}
+
+.drag-grid {
+    cursor: move;
     margin-right: 0.5em;
 }
 
-.vertical-line-focused {
-    outline: 1px solid #7ae793;
-}
-
-.vertical-line-selected {
-    outline: 1px solid #e7c17a;
+.drag-grid .drag-dot {
+    background-color: #ccc;
 }
 
 textarea {

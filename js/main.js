@@ -108,6 +108,20 @@ function checkSingleInstance() {
     }
 }
 
+function lowerbound(array, value) {
+    let left = 0
+    let right = array.length
+    while (left < right) {
+        let mid = Math.floor((left + right) / 2)
+        if (array[mid] < value) {
+            left = mid + 1
+        } else {
+            right = mid
+        }
+    }
+    return left
+}
+
 function updateDragGrid(dragGrid, rows) {
     const trs = Array.from(dragGrid.getElementsByTagName("tr"))
     if (trs.length > rows) {
@@ -176,6 +190,7 @@ const Elements = {
         const rows = 3
         const columns = 2
         const table = BaseElements.table("drag-grid")
+        table.draggable = true
         for (let i = 0; i < rows; ++i) {
             const tr = BaseElements.tr()
             for (let j = 0; j < columns; ++j) {
@@ -230,6 +245,23 @@ const Elements = {
                 deleteButton.className = "section-delete section-delete-clicked"
             }
         }
+        const dragGrid = editDiv.getElementsByClassName("drag-grid")[0]
+        dragGrid.addEventListener("dragstart", (event) => {
+            event.dataTransfer.setDragImage(event.target, window.outerWidth, window.outerHeight)
+        })
+        dragGrid.addEventListener("dragend", (event) => {
+            const sectionsElement = document.getElementById("sections")
+            const sections = Array.from(sectionsElement.getElementsByClassName("section"))
+            const sectionOffsets = sections.map((section) => section.offsetTop + section.offsetHeight / 2)
+            const newIndex = lowerbound(sectionOffsets, event.pageY)
+            sectionsElement.removeChild(section)
+            if (newIndex === sections.length) {
+                sectionsElement.appendChild(section)
+            } else {
+                sectionsElement.insertBefore(section, sections[newIndex])
+            }
+            saveState()
+        })
         section.appendChild(editDiv)
         section.appendChild(deleteButton)
         return section

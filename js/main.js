@@ -317,9 +317,9 @@ function initialize() {
         (entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
-                    header.className = "hcontainer full-width header"
+                    header.classList.remove("header-sticky")
                 } else {
-                    header.className = "hcontainer full-width header header-sticky"
+                    header.classList.add("header-sticky")
                 }
             })
         },

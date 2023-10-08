@@ -241,10 +241,10 @@ const Elements = {
                 sections.removeChild(section)
                 saveState()
             } else {
-                Array.from(document.getElementsByClassName("section-delete-clicked")).forEach((section) => {
-                    section.className = "section-delete"
+                Array.from(document.getElementsByClassName("section-delete-clicked")).forEach((deleteButton) => {
+                    deleteButton.classList.remove("section-delete-clicked")
                 })
-                deleteButton.className = "section-delete section-delete-clicked"
+                deleteButton.classList.add("section-delete-clicked")
             }
         }
         const dragGrid = editDiv.getElementsByClassName("drag-grid")[0]
@@ -265,16 +265,23 @@ const Elements = {
         }
         dragGrid.addEventListener("dragstart", (event) => {
             event.dataTransfer.setDragImage(event.target, window.outerWidth, window.outerHeight)
+            section.classList.add("section-drag")
         })
         dragGrid.addEventListener("dragend", (event) => {
             event.preventDefault()
+            section.classList.remove("section-drag")
             onDragEnd(event.pageY)
+        })
+        dragGrid.addEventListener("touchstart", (event) => {
+            event.preventDefault()
+            section.classList.add("section-drag")
         })
         dragGrid.addEventListener("touchmove", (event) => {
             event.preventDefault()
         })
         dragGrid.addEventListener("touchend", (event) => {
             event.preventDefault()
+            section.classList.remove("section-drag")
             onDragEnd(event.changedTouches[0].pageY)
         })
         section.appendChild(editDiv)

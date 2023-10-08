@@ -246,21 +246,34 @@ const Elements = {
             }
         }
         const dragGrid = editDiv.getElementsByClassName("drag-grid")[0]
+        function onDragEnd(pageY) {
+            const sectionsElement = document.getElementById("sections")
+            const sections = Array.from(sectionsElement.getElementsByClassName("section"))
+            const sectionOffsets = sections.map((section) => section.offsetTop + section.offsetHeight / 2)
+            const newIndex = lowerbound(sectionOffsets, pageY)
+            if (sections[newIndex] !== section) {
+                sectionsElement.removeChild(section)
+                if (newIndex === sections.length) {
+                    sectionsElement.appendChild(section)
+                } else {
+                    sectionsElement.insertBefore(section, sections[newIndex])
+                }
+                saveState()
+            }
+        }
         dragGrid.addEventListener("dragstart", (event) => {
             event.dataTransfer.setDragImage(event.target, window.outerWidth, window.outerHeight)
         })
         dragGrid.addEventListener("dragend", (event) => {
-            const sectionsElement = document.getElementById("sections")
-            const sections = Array.from(sectionsElement.getElementsByClassName("section"))
-            const sectionOffsets = sections.map((section) => section.offsetTop + section.offsetHeight / 2)
-            const newIndex = lowerbound(sectionOffsets, event.pageY)
-            sectionsElement.removeChild(section)
-            if (newIndex === sections.length) {
-                sectionsElement.appendChild(section)
-            } else {
-                sectionsElement.insertBefore(section, sections[newIndex])
-            }
-            saveState()
+            event.preventDefault()
+            onDragEnd(event.pageY)
+        })
+        dragGrid.addEventListener("touchmove", (event) => {
+            event.preventDefault()
+        })
+        dragGrid.addEventListener("touchend", (event) => {
+            event.preventDefault()
+            onDragEnd(event.changedTouches[0].pageY)
         })
         section.appendChild(editDiv)
         section.appendChild(deleteButton)

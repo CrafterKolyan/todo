@@ -248,13 +248,15 @@ const Elements = {
             }
         }
         const dragGrid = editDiv.getElementsByClassName("drag-grid")[0]
+        let offsets = null
         function onDragEnd(pageY) {
             const sectionsElement = document.getElementById("sections")
-            const sections = Array.from(sectionsElement.getElementsByClassName("section"))
+            const sections = Array.from(sectionsElement.querySelectorAll(".section:not(.section-drag)"))
             const sectionOffsets = sections.map((section) => section.offsetTop + section.offsetHeight / 2)
             const newIndex = lowerbound(sectionOffsets, pageY)
             if (sections[newIndex] !== section) {
-                sectionsElement.removeChild(section)
+                // Not needed for some reason
+                // sectionsElement.removeChild(section)
                 if (newIndex === sections.length) {
                     sectionsElement.appendChild(section)
                 } else {
@@ -262,26 +264,43 @@ const Elements = {
                 }
                 saveState()
             }
+            section.classList.remove("section-drag")
+            section.removeAttribute("style")
+            offsets = null
         }
+        dragGrid.addEventListener("mousedown", (event) => {
+            section.classList.add("section-drag")
+            offsets = [section.offsetLeft - event.pageX, section.offsetTop - event.pageY]
+        })
+        dragGrid.addEventListener("mouseup", () => {
+            section.classList.remove("section-drag")
+            offsets = null
+        })
         dragGrid.addEventListener("dragstart", (event) => {
             event.dataTransfer.setDragImage(event.target, window.outerWidth, window.outerHeight)
-            section.classList.add("section-drag")
+        })
+        dragGrid.addEventListener("drag", (event) => {
+            if (event.screenX === 0 && event.screenY === 0) {
+                return
+            }
+            section.style.position = "absolute"
+            section.style.left = offsets[0] + event.pageX + "px"
+            section.style.top = offsets[1] + event.pageY + "px"
         })
         dragGrid.addEventListener("dragend", (event) => {
-            event.preventDefault()
-            section.classList.remove("section-drag")
             onDragEnd(event.pageY)
         })
         dragGrid.addEventListener("touchstart", (event) => {
-            event.preventDefault()
             section.classList.add("section-drag")
+            offsets = [section.offsetLeft - event.changedTouches[0].pageX, section.offsetTop - event.changedTouches[0].pageY]
         })
         dragGrid.addEventListener("touchmove", (event) => {
             event.preventDefault()
+            section.style.position = "absolute"
+            section.style.left = offsets[0] + event.changedTouches[0].pageX + "px"
+            section.style.top = offsets[1] + event.changedTouches[0].pageY + "px"
         })
         dragGrid.addEventListener("touchend", (event) => {
-            event.preventDefault()
-            section.classList.remove("section-drag")
             onDragEnd(event.changedTouches[0].pageY)
         })
         section.appendChild(editDiv)

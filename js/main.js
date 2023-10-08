@@ -1,3 +1,5 @@
+"use strict";
+
 class State {
     static #instance = null
 

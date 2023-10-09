@@ -317,9 +317,11 @@ function initialize() {
             saveState()
         }
     })
-    document.addEventListener("mousedown", () => {
-        Array.from(document.getElementsByClassName("section-delete-clicked")).forEach((section) => {
-            section.className = "section-delete"
+    document.addEventListener("mousedown", (event) => {
+        Array.from(document.getElementsByClassName("section-delete-clicked")).forEach((deleteButton) => {
+            if (event.target !== deleteButton) {
+                deleteButton.className = "section-delete"
+            }
         })
     })
 

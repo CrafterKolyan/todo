@@ -1,4 +1,4 @@
-"use strict";
+"use strict"
 
 class State {
     static #instance = null
@@ -156,6 +156,39 @@ function autoAdjustTextareaHeight(textarea, dragGrid) {
     updateDragGrid(dragGrid, dragGridRows)
 }
 
+const DragAndDrop = {
+    dragStart: function (section, eventX, eventY) {
+        section.classList.add("section-drag")
+        section.setAttribute("data-click-offset-left", section.offsetLeft - eventX)
+        section.setAttribute("data-click-offset-top", section.offsetTop - eventY)
+    },
+    drag: function (section, eventX, eventY) {
+        section.style.position = "absolute"
+        const offsetLeft = parseInt(section.getAttribute("data-click-offset-left"))
+        const offsetTop = parseInt(section.getAttribute("data-click-offset-top"))
+        section.style.left = offsetLeft + eventX + "px"
+        section.style.top = offsetTop + eventY + "px"
+    },
+    dragEnd: function (section, eventY) {
+        const sectionsElement = document.getElementById("sections")
+        const sections = Array.from(sectionsElement.querySelectorAll(".section:not(.section-drag)"))
+        const sectionOffsets = sections.map((section) => section.offsetTop + section.offsetHeight / 2)
+        const newIndex = lowerbound(sectionOffsets, eventY)
+        if (sections[newIndex] !== section) {
+            if (newIndex === sections.length) {
+                sectionsElement.appendChild(section)
+            } else {
+                sectionsElement.insertBefore(section, sections[newIndex])
+            }
+            saveState()
+        }
+        section.removeAttribute("data-click-offset-left")
+        section.removeAttribute("data-click-offset-top")
+        section.removeAttribute("style")
+        section.classList.remove("section-drag")
+    }
+}
+
 const BaseElements = {
     element: function (tagName, className) {
         const element = document.createElement(tagName)
@@ -192,7 +225,6 @@ const Elements = {
         const rows = 3
         const columns = 2
         const table = BaseElements.table("drag-grid")
-        table.draggable = true
         for (let i = 0; i < rows; ++i) {
             const tr = BaseElements.tr()
             for (let j = 0; j < columns; ++j) {
@@ -248,60 +280,19 @@ const Elements = {
             }
         }
         const dragGrid = editDiv.getElementsByClassName("drag-grid")[0]
-        let offsets = null
-        function onDragEnd(pageY) {
-            const sectionsElement = document.getElementById("sections")
-            const sections = Array.from(sectionsElement.querySelectorAll(".section:not(.section-drag)"))
-            const sectionOffsets = sections.map((section) => section.offsetTop + section.offsetHeight / 2)
-            const newIndex = lowerbound(sectionOffsets, pageY)
-            if (sections[newIndex] !== section) {
-                // Not needed for some reason
-                // sectionsElement.removeChild(section)
-                if (newIndex === sections.length) {
-                    sectionsElement.appendChild(section)
-                } else {
-                    sectionsElement.insertBefore(section, sections[newIndex])
-                }
-                saveState()
-            }
-            section.classList.remove("section-drag")
-            section.removeAttribute("style")
-            offsets = null
-        }
         dragGrid.addEventListener("mousedown", (event) => {
-            section.classList.add("section-drag")
-            offsets = [section.offsetLeft - event.pageX, section.offsetTop - event.pageY]
-        })
-        dragGrid.addEventListener("mouseup", () => {
-            section.classList.remove("section-drag")
-            offsets = null
-        })
-        dragGrid.addEventListener("dragstart", (event) => {
-            event.dataTransfer.setDragImage(event.target, window.outerWidth, window.outerHeight)
-        })
-        dragGrid.addEventListener("drag", (event) => {
-            if (event.screenX === 0 && event.screenY === 0) {
-                return
-            }
-            section.style.position = "absolute"
-            section.style.left = offsets[0] + event.pageX + "px"
-            section.style.top = offsets[1] + event.pageY + "px"
-        })
-        dragGrid.addEventListener("dragend", (event) => {
-            onDragEnd(event.pageY)
+            DragAndDrop.dragStart(section, event.pageX, event.pageY)
         })
         dragGrid.addEventListener("touchstart", (event) => {
-            section.classList.add("section-drag")
-            offsets = [section.offsetLeft - event.changedTouches[0].pageX, section.offsetTop - event.changedTouches[0].pageY]
+            DragAndDrop.dragStart(section, event.changedTouches[0].pageX, event.changedTouches[0].pageY)
         })
         dragGrid.addEventListener("touchmove", (event) => {
             event.preventDefault()
-            section.style.position = "absolute"
-            section.style.left = offsets[0] + event.changedTouches[0].pageX + "px"
-            section.style.top = offsets[1] + event.changedTouches[0].pageY + "px"
+            DragAndDrop.drag(section, event.changedTouches[0].pageX, event.changedTouches[0].pageY)
         })
         dragGrid.addEventListener("touchend", (event) => {
-            onDragEnd(event.changedTouches[0].pageY)
+            event.preventDefault()
+            DragAndDrop.dragEnd(section, event.changedTouches[0].pageY)
         })
         section.appendChild(editDiv)
         section.appendChild(deleteButton)
@@ -365,6 +356,18 @@ function initialize() {
             const sectionText = section.getElementsByClassName("section-text")[0]
             const dragGrid = section.getElementsByClassName("drag-grid")[0]
             autoAdjustTextareaHeight(sectionText, dragGrid)
+        })
+    })
+    window.addEventListener("mousemove", (event) => {
+        const draggedSections = Array.from(document.getElementsByClassName("section-drag"))
+        draggedSections.forEach((section) => {
+            DragAndDrop.drag(section, event.pageX, event.pageY)
+        })
+    })
+    window.addEventListener("mouseup", (event) => {
+        const draggedSections = Array.from(document.getElementsByClassName("section-drag"))
+        draggedSections.forEach((section) => {
+            DragAndDrop.dragEnd(section, event.pageY)
         })
     })
 

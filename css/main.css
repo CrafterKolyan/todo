@@ -17,6 +17,11 @@ body {
     margin-right: 8px;
 }
 
+textarea {
+    display: block;
+    resize: none;
+}
+
 .center {
     text-align: center;
 }
@@ -152,9 +157,4 @@ body {
 
 .drag-grid .drag-dot {
     background-color: #ccc;
-}
-
-textarea {
-    display: block;
-    resize: none;
 }

@@ -317,7 +317,7 @@ function initialize() {
             saveState()
         }
     })
-    document.addEventListener("click", () => {
+    document.addEventListener("mousedown", () => {
         Array.from(document.getElementsByClassName("section-delete-clicked")).forEach((section) => {
             section.className = "section-delete"
         })
@@ -362,6 +362,9 @@ function initialize() {
     })
     window.addEventListener("mousemove", (event) => {
         const draggedSections = Array.from(document.getElementsByClassName("section-drag"))
+        if (draggedSections.length > 0) {
+            event.preventDefault()
+        }
         draggedSections.forEach((section) => {
             DragAndDrop.drag(section, event.pageX, event.pageY)
         })

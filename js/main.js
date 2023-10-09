@@ -157,15 +157,17 @@ function autoAdjustTextareaHeight(textarea, dragGrid) {
 }
 
 const DragAndDrop = {
+    dragOffsetLeftAttribute: "data-click-offset-left",
+    dragOffsetTopAttribute: "data-click-offset-top",
     dragStart: function (section, eventX, eventY) {
         section.classList.add("section-drag")
-        section.setAttribute("data-click-offset-left", section.offsetLeft - eventX)
-        section.setAttribute("data-click-offset-top", section.offsetTop - eventY)
+        section.setAttribute(DragAndDrop.dragOffsetLeftAttribute, section.offsetLeft - eventX)
+        section.setAttribute(DragAndDrop.dragOffsetTopAttribute, section.offsetTop - eventY)
     },
     drag: function (section, eventX, eventY) {
         section.style.position = "absolute"
-        const offsetLeft = parseInt(section.getAttribute("data-click-offset-left"))
-        const offsetTop = parseInt(section.getAttribute("data-click-offset-top"))
+        const offsetLeft = parseInt(section.getAttribute(DragAndDrop.dragOffsetLeftAttribute))
+        const offsetTop = parseInt(section.getAttribute(DragAndDrop.dragOffsetTopAttribute))
         section.style.left = offsetLeft + eventX + "px"
         section.style.top = offsetTop + eventY + "px"
     },
@@ -182,8 +184,8 @@ const DragAndDrop = {
             }
             saveState()
         }
-        section.removeAttribute("data-click-offset-left")
-        section.removeAttribute("data-click-offset-top")
+        section.removeAttribute(DragAndDrop.dragOffsetLeftAttribute)
+        section.removeAttribute(DragAndDrop.dragOffsetTopAttribute)
         section.removeAttribute("style")
         section.classList.remove("section-drag")
     }

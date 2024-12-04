@@ -4,3 +4,8 @@ exclude:
   - .gitignore
   - .vscode
   - README.md
+  - src
+  - tsconfig.json
+  - node_modules
+  - package.json
+  - package-lock.json

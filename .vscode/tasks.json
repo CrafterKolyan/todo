@@ -2,9 +2,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Run",
+            "label": "Run server",
             "type": "shell",
-            "command": "jekyll serve --host 0.0.0.0 --port 4000",
+            "command": "jekyll serve --host 0.0.0.0 --port 4000 --incremental",
             "runOptions": {
                 "runOn": "folderOpen"
             }

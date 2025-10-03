@@ -71,7 +71,10 @@ class State {
   }
 }
 
-function saveState () {
+function saveState() {
+  if (!checkSingleInstance()) {
+    return
+  }
   let status = document.getElementById('status')
   status.innerText = 'Saving...'
   State.update()
@@ -108,7 +111,9 @@ function checkSingleInstance () {
     status.innerText =
       'Another instance of this app is running. Reload the page if you want to continue editing'
     status.className = 'header-block right red'
+    return false;
   }
+  return true;
 }
 
 function lowerbound (array, value) {

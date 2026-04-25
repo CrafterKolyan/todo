@@ -265,7 +265,6 @@ const Elements = {
   sectionText: function () {
     const textarea = BaseElements.textarea('full-width section-text')
     textarea.autocomplete = 'off'
-    textarea.rows = '1'
     textarea.style.height = textareaRowHeight + 'px'
     return textarea
   },
@@ -276,7 +275,7 @@ const Elements = {
     const dragGrid = Elements.dragGrid()
     const sectionText = Elements.sectionText()
     sectionText.oninput = function () {
-      autoAdjustTextareaHeight(sectionText, dragGrid)
+      requestAnimationFrame(() => autoAdjustTextareaHeight(sectionText, dragGrid))
       saveState()
     }
     editDiv.appendChild(dragGrid)

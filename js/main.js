@@ -151,13 +151,9 @@ function updateDragGrid (dragGrid, rows) {
   return dragGrid
 }
 
-const textareaRowHeight = 23
-
 function autoAdjustTextareaHeight (textarea, dragGrid) {
-  textarea.style.height = '0px'
-  const height = textarea.scrollHeight
-  textarea.style.height = height + 'px'
-  const rows = Math.round(height / textareaRowHeight)
+  const rows = textarea.value.split("\n").length
+  textarea.rows = rows
   const dragGridRows = 3 * rows
   updateDragGrid(dragGrid, dragGridRows)
 }
@@ -265,7 +261,7 @@ const Elements = {
   sectionText: function () {
     const textarea = BaseElements.textarea('full-width section-text')
     textarea.autocomplete = 'off'
-    textarea.style.height = textareaRowHeight + 'px'
+    textarea.rows = 1
     textarea.style.overflow = 'hidden'
     return textarea
   },

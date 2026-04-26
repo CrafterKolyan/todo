@@ -266,6 +266,7 @@ const Elements = {
     const textarea = BaseElements.textarea('full-width section-text')
     textarea.autocomplete = 'off'
     textarea.style.height = textareaRowHeight + 'px'
+    textarea.style.overflow = 'hidden'
     return textarea
   },
   editDiv: function () {

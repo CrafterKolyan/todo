@@ -156,8 +156,9 @@ const textareaRowHeight = 23
 function autoAdjustTextareaHeight (textarea, dragGrid) {
   textarea.style.height = '0px'
   const height = textarea.scrollHeight
-  textarea.style.height = height + 'px'
   const rows = Math.round(height / textareaRowHeight)
+  const correctHeight = rows * textareaRowHeight
+  textarea.style.height = correctHeight + 'px'
   const dragGridRows = 3 * rows
   updateDragGrid(dragGrid, dragGridRows)
 }
@@ -266,7 +267,6 @@ const Elements = {
     const textarea = BaseElements.textarea('full-width section-text')
     textarea.autocomplete = 'off'
     textarea.style.height = textareaRowHeight + 'px'
-    textarea.style.overflow = 'hidden'
     return textarea
   },
   editDiv: function () {
